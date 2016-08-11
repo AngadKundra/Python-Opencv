@@ -1,0 +1,120 @@
+Hey everyone, this is a step by step guide to install python2.7 with opencv 3.0 + opencv 3.0 contrib pack for ubuntu.
+
+First of all you need to upgrade any pre-installed packages for ubuntu using
+
+sudo apt-get update 
+sudo apt-get upgrade
+
+Now we need to install developer tools
+
+sudo apt-get install build-essential cmake git pkg-config
+
+Opencv needs to open various images formats for that we need to have image packages
+
+sudo apt-get install libjpeg8-dev libtiff4-dev libjasper-dev libpng12-dev
+
+GTK library is also needed for displaying the image
+
+sudo apt-get install libgtk2.0-dev
+
+To access videos and individual frames
+
+sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev
+
+And to optimize various processes
+
+sudo apt-get install libatlas-base-dev gfortran
+
+Now we will install pip
+
+wget https://bootstrap.pypa.io/get-pip.py
+
+sudo python get-pip.py
+
+We can create virtual environment for separating each project and to install dependencies separately
+
+sudo pip install virtualenv virtualenvwrapper
+
+sudo rm -rf ~/.cache/pip
+
+Now we need to update our ~/.bashrc file
+
+#virtualenv and virtualenvwrapper
+
+export WORKON_HOME=$HOME/.virtualenvs
+
+source /usr/local/bin/virtualenvwrapper.sh
+
+This will make sure that the virtualenv and virtualenvwrapper are loaded everytime you login. Now you need to logout and login for changes to take effect and reload the contents.
+
+source ~/.bashrc
+
+Now we create a virtualenvironment say "workspace"
+
+mkvirtualenv workspace
+
+Now we install Python 2.7 and numpy
+
+sudo apt-get install python2.7-dev
+
+pip install numpy
+
+Now we will pull opencv from github
+
+cd ~
+
+git clone https://github.com/Itseez/opencv.git
+
+cd opencv
+
+git checkout 3.0.0
+
+Now for the contrib pack like SURF,SIFT detectors
+
+cd ~
+
+git clone https://github.com/Itseez/opencv_contrib.git
+
+cd opencv_contrib
+
+git checkout 3.0.0
+
+Now we make the files
+
+cd ~/opencv
+
+mkdir build
+
+cd build
+
+cmake -D CMAKE_BUILD_TYPE=RELEASE \ -D CMAKE_INSTALL_PREFIX=/usr/local \ -D INSTALL_C_EXAMPLES=ON \ -D INSTALL_PYTHON_EXAMPLES=ON \ -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib/modules \ -D BUILD_EXAMPLES=ON ..
+
+Finally compile
+
+make -j5
+
+Now after compiling successfully we need to install it
+
+sudo make install
+
+sudo ldconfig
+
+Now we need to link our virtual environment with site packages to be able to use OpenCV within our environment WorkSpace
+
+cd ~/.virtualenvs/workspace/lib/python2.7/site-packages/
+
+ln -s /usr/local/lib/python2.7/site-packages/cv2.so cv2.so
+
+This has successfully installed Opencv 3.0 with contrib pack into your system
+
+To check..
+
+workon workspace
+
+python
+
+>>> import cv2
+
+>>> cv2.version
+
+'3.0.0' #Will be printed
